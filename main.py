@@ -49,48 +49,60 @@ keypico.led_sleep_time = 10
 start_note = 68
 velocity = 127
 
-rainbowKey = [0, 5, 10, 15, 3, 6]
+increaseKey = [0, 1, 5, 2, 10, 3, 15]
+rainbowKey = [0, 5, 10, 15, 6, 3]
 crossKey = [3, 6, 0, 15, 12]
 dangerKey = [3, 2, 1, 0]
 pressedKey = []
 
+def increase():
+    rgb = (0, 0, 0)
+    target_rgb = (255, 255, 255)
+    step_size = 1
+    while rgb != target_rgb:
+        # Update each channel by adding the step size
+        rgb = tuple(min(c + step_size, 255) for c in rgb)
+        for key in keys:
+            key.set_led(*rgb)
+        time.sleep(0.01)
+    for key in keys:
+        key.set_led(*snow)
+
+
 def rainbow():
-    time.sleep(0.5)
+    time.sleep(0.2)
     for key in keys:
         key.set_led(*red)
-    time.sleep(0.5)
+    time.sleep(0.2)
     for key in keys:
         key.set_led(*snow)
-    time.sleep(0.5)
+    time.sleep(0.2)
     for key in keys:
         key.set_led(*yellow)
-    time.sleep(0.5)
+    time.sleep(0.2)
     for key in keys:
         key.set_led(*snow)
-    time.sleep(0.5)
+    time.sleep(0.2)
     for key in keys:
         key.set_led(*green)
-    time.sleep(0.5)
+    time.sleep(0.2)
     for key in keys:
         key.set_led(*snow)
-    time.sleep(0.5)
+    time.sleep(0.2)
     for key in keys:
         key.set_led(*blue)
-    time.sleep(0.5)
+    time.sleep(0.2)
     for key in keys:
-        key.set_led(*snow)
-        
-        
-            
+        key.set_led(*snow)    
 
 def danger():
     if len(pressedKey) == 4:
         if pressedKey == dangerKey:
             for i in range (3):
-                time.sleep(0.5)
+                time.sleep(0.2)
                 for key in keys:
                     key.set_led(*red)
-                time.sleep(0.5)
+                time.sleep(0.2)
                 for key in keys:
                     key.set_led(*snow)
             pressedKey.clear()
@@ -98,16 +110,20 @@ def danger():
     elif len(pressedKey) == 5:
         if pressedKey == crossKey:
             for i in range (3):
-                time.sleep(0.5)
+                time.sleep(0.2)
                 for key in keys:
                     key.set_led(*green)
-                time.sleep(0.5)
+                time.sleep(0.2)
                 for key in keys:
                     key.set_led(*snow)
             pressedKey.clear()
     elif len(pressedKey) == 6:
         if pressedKey == rainbowKey:
             rainbow()
+            pressedKey.clear()
+    elif len(pressedKey) == 7:
+        if pressedKey == increaseKey:
+            increase()
             pressedKey.clear()
         else: 
             pressedKey.clear()
