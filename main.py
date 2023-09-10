@@ -23,6 +23,7 @@ cyan = (0, 255, 255)
 red = (255, 0, 0)
 green = (0, 255, 0)
 purple = (255, 0, 255)
+yellow = (255, 234, 0)
 
 def randomRGB():
     r = random.choice([0, 128, 255])
@@ -48,24 +49,71 @@ keypico.led_sleep_time = 10
 start_note = 68
 velocity = 127
 
+rainbowKey = [0, 5, 10, 15, 3, 6]
+crossKey = [3, 6, 0, 15, 12]
 dangerKey = [3, 2, 1, 0]
 pressedKey = []
+
+def rainbow():
+    time.sleep(0.5)
+    for key in keys:
+        key.set_led(*red)
+    time.sleep(0.5)
+    for key in keys:
+        key.set_led(*snow)
+    time.sleep(0.5)
+    for key in keys:
+        key.set_led(*yellow)
+    time.sleep(0.5)
+    for key in keys:
+        key.set_led(*snow)
+    time.sleep(0.5)
+    for key in keys:
+        key.set_led(*green)
+    time.sleep(0.5)
+    for key in keys:
+        key.set_led(*snow)
+    time.sleep(0.5)
+    for key in keys:
+        key.set_led(*blue)
+    time.sleep(0.5)
+    for key in keys:
+        key.set_led(*snow)
+        
+        
+            
 
 def danger():
     if len(pressedKey) == 4:
         if pressedKey == dangerKey:
             for i in range (3):
-                red = (255, 0, 0)
-                time.sleep(1)
+                time.sleep(0.5)
                 for key in keys:
                     key.set_led(*red)
-                time.sleep(1)
+                time.sleep(0.5)
                 for key in keys:
                     key.set_led(*snow)
-        else:
-            pressedKey = []
+            pressedKey.clear()
+
+    elif len(pressedKey) == 5:
+        if pressedKey == crossKey:
+            for i in range (3):
+                time.sleep(0.5)
+                for key in keys:
+                    key.set_led(*green)
+                time.sleep(0.5)
+                for key in keys:
+                    key.set_led(*snow)
+            pressedKey.clear()
+    elif len(pressedKey) == 6:
+        if pressedKey == rainbowKey:
+            rainbow()
+            pressedKey.clear()
+        else: 
+            pressedKey.clear()
+            print('clear')
     else:
-        pressedKey = []
+        pass
 
 # Loop
 
@@ -80,9 +128,6 @@ for key in keys:
         key.set_led(*RGBp)
         note = start_note + key.number
         pressedKey.append(key.number)
-        print(pressedKey)
-        print(len(pressedKey))
-        print(type(len(pressedKey)))
 
         midi.send(NoteOn(note, velocity))
 
@@ -101,5 +146,6 @@ for key in keys:
         key.set_led(*RGBr)
 
 while True:
+    danger()
     keypico.update()
 
